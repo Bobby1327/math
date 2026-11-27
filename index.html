@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conta Rápida — Jogo de Matemática</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-shapes" aria-hidden="true">
+    <span class="shape shape-1">+</span>
+    <span class="shape shape-2">×</span>
+    <span class="shape shape-3">÷</span>
+    <span class="shape shape-4">−</span>
+    <span class="shape shape-5">=</span>
+  </div>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-badge" aria-hidden="true">÷×</div>
+        <div>
+          <h1 class="brand-title">Conta Rápida</h1>
+          <p class="brand-subtitle">Treine sua mente com matemática</p>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="record-pill" title="Seu melhor placar salvo">
+          <span class="record-label">Recorde</span>
+          <strong id="best-score-badge">0</strong>
+        </div>
+        <button
+          id="sound-toggle"
+          class="icon-btn"
+          type="button"
+          aria-label="Ativar ou desativar sons"
+          title="Som ligado"
+        >
+          🔊
+        </button>
+      </div>
+    </header>
+
+    <!-- Tela Inicial / Configuração -->
+    <section id="screen-setup" class="card screen is-active" aria-labelledby="setup-heading">
+      <div class="card-header">
+        <h2 id="setup-heading">Escolha como quer jogar</h2>
+        <p>Configure o desafio e clique em começar.</p>
+      </div>
+
+      <div class="config-group">
+        <span class="config-label">Operações</span>
+        <div class="pill-grid" role="group" aria-label="Selecionar operação">
+          <button type="button" class="choice-pill is-selected" data-group="operation" data-value="all">
+            <span class="pill-icon">✨</span> Misturado
+          </button>
+          <button type="button" class="choice-pill" data-group="operation" data-value="add">
+            <span class="pill-icon">+</span> Soma
+          </button>
+          <button type="button" class="choice-pill" data-group="operation" data-value="sub">
+            <span class="pill-icon">−</span> Subtração
+          </button>
+          <button type="button" class="choice-pill" data-group="operation" data-value="mul">
+            <span class="pill-icon">×</span> Multiplicação
+          </button>
+          <button type="button" class="choice-pill" data-group="operation" data-value="div">
+            <span class="pill-icon">÷</span> Divisão
+          </button>
+        </div>
+      </div>
+
+      <div class="config-row">
+        <div class="config-group">
+          <span class="config-label">Dificuldade</span>
+          <div class="segmented" role="group" aria-label="Selecionar dificuldade">
+            <button type="button" class="seg-btn is-selected" data-group="difficulty" data-value="easy">
+              Fácil
+            </button>
+            <button type="button" class="seg-btn" data-group="difficulty" data-value="medium">
+              Médio
+            </button>
+            <button type="button" class="seg-btn" data-group="difficulty" data-value="hard">
+              Difícil
+            </button>
+          </div>
+        </div>
+
+        <div class="config-group">
+          <span class="config-label">Modo de jogo</span>
+          <div class="segmented" role="group" aria-label="Selecionar modo de jogo">
+            <button type="button" class="seg-btn is-selected" data-group="mode" data-value="timed">
+              ⏱️ 60s
+            </button>
+            <button type="button" class="seg-btn" data-group="mode" data-value="free">
+              ♾️ Livre
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="config-group">
+        <span class="config-label">Como responder</span>
+        <div class="segmented" role="group" aria-label="Forma de resposta">
+          <button type="button" class="seg-btn is-selected" data-group="inputMode" data-value="options">
+            🎯 4 Opções
+          </button>
+          <button type="button" class="seg-btn" data-group="inputMode" data-value="type">
+            ⌨️ Digitar
+          </button>
+        </div>
+      </div>
+
+      <button id="start-btn" class="primary-btn" type="button">
+        Começar Jogo
+      </button>
+    </section>
+
+    <!-- Tela de Jogo -->
+    <section id="screen-play" class="card screen" aria-live="polite">
+      <div class="hud">
+        <div class="hud-stat">
+          <span class="hud-label">Pontos</span>
+          <strong id="hud-score" class="hud-value">0</strong>
+        </div>
+
+        <div class="hud-stat" id="hud-timer-box">
+          <span class="hud-label">Tempo</span>
+          <strong id="hud-timer" class="hud-value">60s</strong>
+        </div>
+
+        <div class="hud-stat">
+          <span class="hud-label">Sequência</span>
+          <strong id="hud-streak" class="hud-value">0 🔥</strong>
+        </div>
+
+        <button id="quit-btn" class="ghost-btn" type="button" title="Encerrar partida">
+          Encerrar
+        </button>
+      </div>
+
+      <div id="timer-bar-wrap" class="timer-bar-wrap" aria-hidden="true">
+        <div id="timer-bar" class="timer-bar"></div>
+      </div>
+
+      <div id="question-box" class="question-box">
+        <span class="question-tag" id="question-tag">Questão 1</span>
+        <div class="equation" id="equation-text">7 + 5 = ?</div>
+        <div class="feedback-line" id="feedback-line" aria-live="assertive"></div>
+      </div>
+
+      <!-- Modo 4 opções -->
+      <div id="options-grid" class="options-grid">
+        <button type="button" class="option-btn" data-index="0">
+          <span class="key-hint">1</span>
+          <span class="option-val">12</span>
+        </button>
+        <button type="button" class="option-btn" data-index="1">
+          <span class="key-hint">2</span>
+          <span class="option-val">14</span>
+        </button>
+        <button type="button" class="option-btn" data-index="2">
+          <span class="key-hint">3</span>
+          <span class="option-val">10</span>
+        </button>
+        <button type="button" class="option-btn" data-index="3">
+          <span class="key-hint">4</span>
+          <span class="option-val">11</span>
+        </button>
+      </div>
+
+      <!-- Modo Digitar -->
+      <form id="type-form" class="type-form is-hidden" autocomplete="off">
+        <input
+          id="answer-input"
+          class="answer-input"
+          type="number"
+          inputmode="numeric"
+          placeholder="Digite a resposta..."
+          aria-label="Digite sua resposta"
+        />
+        <button class="primary-btn submit-answer-btn" type="submit">
+          Responder
+        </button>
+      </form>
+
+      <p class="controls-hint" id="controls-hint">
+        Dica: você pode usar as teclas <strong>1</strong>, <strong>2</strong>, <strong>3</strong> e <strong>4</strong> no teclado.
+      </p>
+    </section>
+
+    <!-- Tela de Resultado -->
+    <section id="screen-result" class="card screen" aria-labelledby="result-heading">
+      <div class="result-hero">
+        <div id="result-emoji" class="result-emoji" aria-hidden="true">🏆</div>
+        <h2 id="result-heading">Fim de Jogo!</h2>
+        <p id="result-message" class="result-message">Mandou muito bem!</p>
+        <span id="new-record-badge" class="new-record-badge is-hidden">Novo Recorde! 🎉</span>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">Pontuação</span>
+          <strong id="res-score" class="stat-value">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Acertos</span>
+          <strong id="res-correct" class="stat-value">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Precisão</span>
+          <strong id="res-accuracy" class="stat-value">0%</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Melhor sequência</span>
+          <strong id="res-streak" class="stat-value">0</strong>
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <button id="play-again-btn" class="primary-btn" type="button">
+          Jogar Novamente
+        </button>
+        <button id="change-settings-btn" class="secondary-btn" type="button">
+          Mudar Opções
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
