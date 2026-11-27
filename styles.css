@@ -657,6 +657,29 @@ body {
   display: none !important;
 }
 
+.credits-footer {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.credits-label {
+  font-weight: 800;
+  color: var(--primary);
+  margin-right: 4px;
+}
+
+.credits-names {
+  font-weight: 700;
+  color: var(--ink);
+}
+
 @media (max-width: 520px) {
   .card {
     padding: 20px;
